@@ -4,9 +4,13 @@ import { UserProvider } from "@/contexts/UserContext";
 import { HeroUIProvider } from "@heroui/react";
 import "./globals.scss";
 
+const VPN_PROJECT_NAME = process.env.NEXT_PUBLIC_VPN_PROJECT_NAME || "";
+const VPN_PROJECT_DESCRIPTION =
+  process.env.NEXT_PUBLIC_VPN_PROJECT_DESCRIPTION || "";
+
 export const metadata: Metadata = {
-  title: "VPN Admin Panel",
-  description: "VPN service administration panel",
+  title: VPN_PROJECT_NAME,
+  description: VPN_PROJECT_DESCRIPTION,
 };
 
 export default function RootLayout({
@@ -15,13 +19,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru">
+    <html lang="ru" className="dark">
       <body>
-        <HeroUIProvider>
-          <UserProvider>
-            <QueryProvider>{children}</QueryProvider>
-          </UserProvider>
-        </HeroUIProvider>
+        <QueryProvider>
+          <HeroUIProvider>
+            <UserProvider>{children}</UserProvider>
+          </HeroUIProvider>
+        </QueryProvider>
       </body>
     </html>
   );

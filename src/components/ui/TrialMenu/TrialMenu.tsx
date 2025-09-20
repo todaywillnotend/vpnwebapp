@@ -13,13 +13,19 @@ import {
   ClockIcon,
   CurrencyDollarIcon,
   ShieldExclamationIcon,
+  RocketLaunchIcon,
+  WifiIcon,
+  GlobeAltIcon,
+  ComputerDesktopIcon,
 } from "@heroicons/react/24/outline";
+import { FeatureShowcase } from "../FeatureShowcase";
 
 const TELEGRAM_SUPPORT = process.env.NEXT_PUBLIC_TELEGRAM_SUPPORT || "";
 const TELEGRAM_NEWS_CHANNEL =
   process.env.NEXT_PUBLIC_TELEGRAM_NEWS_CHANNEL || "";
+const TG_BOT = process.env.NEXT_PUBLIC_TG_BOT || "";
 
-interface MainMenuProps {
+interface TrialMenuProps {
   userProfile?: {
     name: string;
     balance: string;
@@ -28,41 +34,17 @@ interface MainMenuProps {
   };
 }
 
-const MainMenu: React.FC<MainMenuProps> = ({
-  userProfile = {
-    name: "Anzorro",
-    balance: "468₽",
-    id: "4683123",
-    devices: "02",
-  },
-}) => {
+const TrialMenu: React.FC<TrialMenuProps> = () => {
   const router = useRouter();
 
   const menuItems = [
     {
-      id: "subscriptions",
-      title: "Мои подписки",
-      icon: LinkIcon,
-      onClick: () => router.push("/keys"),
-      variant: "default" as const,
-      size: "big" as const,
-    },
-    {
-      id: "balance",
-      title: "Баланс",
-      icon: CurrencyDollarIcon,
-      onClick: () => console.log("Баланс"),
-      variant: "default" as const,
-      size: "small" as const,
-    },
-    {
-      id: "gift",
-      title: "Подарить",
+      id: "trial",
+      title: "Получить бесплатный доступ",
       icon: GiftIcon,
-      onClick: () => console.log("Подарить"),
-      variant: "dark" as const,
-      size: "small" as const,
-      disabled: true,
+      onClick: () => (window.location.href = `${TG_BOT}?start=webapp`),
+      variant: "yellow" as const,
+      size: "big" as const,
     },
     {
       id: "invitations",
@@ -73,25 +55,16 @@ const MainMenu: React.FC<MainMenuProps> = ({
       onClick: () => console.log("Приглашения"),
       variant: "yellow" as const,
       size: "small" as const,
+      disabled: true,
     },
     {
       id: "support",
       title: "Поддержка",
       subtitle: "Возникли вопросы? Задавайте!",
       icon: ChatBubbleLeftRightIcon,
-      // onClick: () => console.log("Поддержка"),
       variant: "dark" as const,
       size: "small" as const,
       onClick: () => (window.location.href = TELEGRAM_SUPPORT),
-    },
-    {
-      id: "instructions",
-      title: "Инструкции",
-      icon: DocumentTextIcon,
-      onClick: () => console.log("Инструкции"),
-      variant: "default" as const,
-      size: "big" as const,
-      disabled: true,
     },
     {
       id: "about",
@@ -105,48 +78,15 @@ const MainMenu: React.FC<MainMenuProps> = ({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="text-primary font-medium text-xs tracking-wider mb-[4px] rounded-xl inline-block">
-        ПРОФИЛЬ
-      </div>
-      <div className="text-[32px] font-bold text-white mb-[20px]">
-        {userProfile.name}
-      </div>
-      <div className="grid grid-flow-col auto-cols-auto gap-[14px] mb-[24px] w-fit">
-        <div>
-          <div className="text-primary font-medium text-xs tracking-wider py-[4px] rounded-xl inline-block mb-[4px]">
-            БАЛАНС
-          </div>
-          <div className="text-[24px] font-extrabold text-white">
-            {userProfile.balance}
-          </div>
-        </div>
-        <div>
-          <div className="text-primary font-medium text-xs tracking-wider py-[4px] rounded-xl inline-block mb-[4px]">
-            ВАШ ID
-          </div>
-          <div className="text-[24px] font-extrabold text-white">
-            {userProfile.id}
-          </div>
-        </div>
-        <div>
-          <div className="text-primary font-medium text-xs tracking-wider py-[4px] rounded-xl inline-block mb-[4px]">
-            УСТРОЙСТВ
-          </div>
-          <div className="text-[24px] font-extrabold text-white">
-            {userProfile.devices}
-          </div>
-        </div>
-      </div>
+      {/* Hero Section */}
+
+      <FeatureShowcase />
 
       {/* Menu Items */}
-      <div className="flex gap-[8px] mt-[55px] flex-wrap">
+      <div className="flex gap-[8px] flex-wrap">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const getColorClasses = () => {
-            // if (item.disabled) {
-            //   return "bg-[#3d3d3d] text-gray-400";
-            // }
-
             switch (item.variant) {
               case "yellow":
                 return "bg-primary from-primary-400 to-primary-500 text-gray-900 font-medium";
@@ -169,11 +109,13 @@ const MainMenu: React.FC<MainMenuProps> = ({
 
           const getBorderClasses = () => {
             if (item.disabled) {
-              return "bg-[#3d3d3d] text-gray-400";
+              return "bg-[#3d3d3d] text-gray-400 saturate-50";
             }
 
             if (item.bgImageUrl || item.disabled) {
               return "border-transparent";
+            } else if (item.variant === "yellow") {
+              return "border-primary text-white";
             } else {
               return "border-white";
             }
@@ -233,4 +175,4 @@ const MainMenu: React.FC<MainMenuProps> = ({
   );
 };
 
-export default MainMenu;
+export default TrialMenu;

@@ -1,12 +1,15 @@
 "use client";
 
+import { useGetOneApiUsersTgIdGet, UserResponse } from "@/api/generated/api";
+import { AppLayout } from "@/components/layout";
+import { TrialMenu } from "@/components/ui/TrialMenu";
+import { Spinner } from "@heroui/react";
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 interface UserContextType {
   tgId: number;
   setTgId: (id: number) => void;
-  isAuthenticated: boolean;
-  setIsAuthenticated: (auth: boolean) => void;
+  user: UserResponse;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -17,15 +20,47 @@ interface UserProviderProps {
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   // В реальном приложении это будет браться из localStorage или API
-  const defaultTgId = parseInt(process.env.NEXT_PUBLIC_DEFAULT_TG_ID || "");
+  const defaultTgId = parseInt(
+    process.env.NEXT_PUBLIC_DEFAULT_TG_ID || "123456789"
+  );
   const [tgId, setTgId] = useState<number>(defaultTgId);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+
+  const { data: user, isLoading: userLoading } = useGetOneApiUsersTgIdGet(
+    tgId,
+    { tg_id: 0 }, // Фиктивное значение, реальный admin ID автоматически добавляется на сервере
+    { query: { enabled: Boolean(tgId) } }
+  );
+
+  if (userLoading || !user) {
+    return (
+      <AppLayout>
+        <div className="h-full flex items-center justify-center">
+          <Spinner color="primary" size="lg" aria-label="Загрузка..." />
+        </div>
+      </AppLayout>
+    );
+  }
+
+  // Если не использовал триал
+  if (!user.trial) {
+    return (
+      <AppLayout>
+        <TrialMenu
+          userProfile={{
+            name: user?.username || user?.first_name + " " + user?.last_name,
+            balance: user?.balance ? String(user?.balance) + "₽" : "0₽",
+            id: String(user?.tg_id) || "-",
+            devices: "02",
+          }}
+        />
+      </AppLayout>
+    );
+  }
 
   const value: UserContextType = {
     tgId,
     setTgId,
-    isAuthenticated,
-    setIsAuthenticated,
+    user,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

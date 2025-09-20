@@ -1,0 +1,108 @@
+"use client";
+
+import React from "react";
+import { useRouter } from "next/navigation";
+import { Button, Input } from "@heroui/react";
+import { KeyIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+import { BackButton, MenuButton } from "../";
+
+function formatDateUntil(timestamp: number): string {
+  const date = new Date(timestamp);
+
+  // Форматирование даты в формат DD.MM.YY
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear().toString().slice(-2);
+
+  // Форматирование времени в формат HH:MM
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+
+  return `${day}.${month}.${year}, ${hours}:${minutes}`;
+}
+
+interface RawKeyItem {
+  email?: string | null;
+  alias?: string | null;
+  expiry_time?: number;
+}
+
+interface KeysListProps {
+  keys: RawKeyItem[];
+}
+
+const KeysList: React.FC<KeysListProps> = ({ keys }) => {
+  const router = useRouter();
+
+  const handleKeyAction = (keyId: string) => {
+    console.log("Действие с ключом:", keyId);
+  };
+
+  // Преобразуем сырые данные в нужный формат
+  const formattedKeys = keys
+    .filter((key) => key.email) // Фильтруем ключи без email
+    .map((key) => ({
+      id: key.email!,
+      name: key.alias || key.email!,
+      expiryDate: key.expiry_time ? formatDateUntil(key.expiry_time) : "",
+    }));
+
+  return (
+    <div className="h-full flex flex-col">
+      {/* Заголовок */}
+      <h1 className="text-3xl font-bold mb-[20px]">Ваши ключи</h1>
+
+      {/* Контент с автоматическим ростом */}
+      <div className="flex-1 flex flex-col">
+        {/* Список ключей */}
+        <div className="space-y-[10px] mb-[20px]">
+          {formattedKeys.map((key) => (
+            <div key={key.id} className="flex items-center gap-1">
+              <Input
+                isDisabled
+                value={key.name}
+                endContent={
+                  <span
+                    style={{ color: "#8F8F8F" }}
+                    className="text-sm whitespace-nowrap"
+                  >
+                    (до {key.expiryDate})
+                  </span>
+                }
+                startContent={
+                  <KeyIcon className="w-6 h-6 text-white pointer-events-none shrink-0 mr-2" />
+                }
+                className="flex-1 opacity-100"
+                classNames={{
+                  input: "bg-black text-white font-medium",
+                  inputWrapper:
+                    "bg-black border border-gray rounded-2xl h-12 min-h-12 px-5",
+                }}
+              />
+              <Button
+                isIconOnly
+                className="bg-white text-black rounded-2xl w-12 h-12 min-w-12"
+                onPress={() => handleKeyAction(key.id)}
+              >
+                <ArrowRightIcon className="w-5 h-5" />
+              </Button>
+            </div>
+          ))}
+        </div>
+
+        {/* Описание */}
+        <p className="text-gray-400 text-center px-[16px]">
+          Вы можете посмотреть дополнительные действия, связанные с ключём
+        </p>
+
+        {/* Кнопки внизу - прижаты к низу */}
+        <div className="space-y-[8px] mt-auto">
+          <BackButton />
+          <MenuButton />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default KeysList;

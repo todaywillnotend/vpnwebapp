@@ -132,7 +132,8 @@ npm run generate-api # Генерация API клиента из OpenAPI
 ```env
 VPN_API_BASE_URL=https://bot.playervpn.ru/api
 VPN_API_TOKEN=your-secret-token
-NEXT_PUBLIC_DEFAULT_TG_ID=442067451
+VPN_API_TG_ID=your-admin-tg-id
+NEXT_PUBLIC_DEFAULT_TG_ID=123456789
 ```
 
 ## 🎨 UI компоненты
