@@ -1,0 +1,36 @@
+{
+  "name": "vpnwebapp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "generate-api": "orval"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@tanstack/react-query": "^5.89.0",
+    "axios": "^1.12.2",
+    "final-form": "^5.0.0",
+    "next": "14.2.5",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-final-form": "^7.0.0",
+    "sass": "^1.93.0",
+    "zod": "^4.1.9"
+  },
+  "devDependencies": {
+    "@tanstack/react-query-devtools": "^5.89.0",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5",
+    "openapi-typescript": "^7.9.1",
+    "orval": "^7.11.2",
+    "prettier": "^3.6.2",
+    "typescript": "^5"
+  }
+}
