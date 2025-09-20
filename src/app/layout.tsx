@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import QueryProvider from "@/providers/QueryProvider";
 import { UserProvider } from "@/contexts/UserContext";
+import { HeroUIProvider } from "@heroui/react";
 import "./globals.scss";
 
 export const metadata: Metadata = {
@@ -16,9 +17,11 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body>
-        <UserProvider>
-          <QueryProvider>{children}</QueryProvider>
-        </UserProvider>
+        <HeroUIProvider>
+          <UserProvider>
+            <QueryProvider>{children}</QueryProvider>
+          </UserProvider>
+        </HeroUIProvider>
       </body>
     </html>
   );

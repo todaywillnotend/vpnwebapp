@@ -1,12 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { AppLayout } from "@/components/layout";
-import { Button, StatCard, Card, PageHeader } from "@/components/ui";
+import { Button, StatCard, Card, PageHeader, MainMenu } from "@/components/ui";
 import { useUser } from "@/contexts/UserContext";
 import {
   useGetAllApiUsersGet,
   useGetAllApiKeysGet,
   useGetAllApiServersGet,
+  useGetOneApiUsersTgIdGet,
 } from "@/api/generated/api";
 import styles from "@/styles/pages.module.scss";
 
@@ -14,21 +16,27 @@ export default function Home() {
   const { tgId } = useUser();
 
   // Используем tgId из контекста
-  const {
-    data: users,
-    isLoading: usersLoading,
-    error: usersError,
-  } = useGetAllApiUsersGet(
-    { tg_id: tgId },
-    { query: { enabled: true, retry: false } }
-  );
+  // const {
+  //   data: users,
+  //   isLoading: usersLoading,
+  //   error: usersError,
+  // } = useGetAllApiUsersGet(
+  //   { tg_id: tgId },
+  //   { query: { enabled: true, retry: false } }
+  // );
 
-  const { data: keys, isLoading: keysLoading } = useGetAllApiKeysGet(
-    { tg_id: tgId },
-    { query: { enabled: true } }
-  );
+  // const { data: keys, isLoading: keysLoading } = useGetAllApiKeysGet(
+  //   { tg_id: tgId },
+  //   { query: { enabled: true } }
+  // );
 
-  const { data: servers, isLoading: serversLoading } = useGetAllApiServersGet(
+  // const { data: servers, isLoading: serversLoading } = useGetAllApiServersGet(
+  //   { tg_id: tgId },
+  //   { query: { enabled: true } }
+  // );
+
+  const { data: user, isLoading: userLoading } = useGetOneApiUsersTgIdGet(
+    tgId,
     { tg_id: tgId },
     { query: { enabled: true } }
   );
@@ -45,58 +53,21 @@ export default function Home() {
     console.log("Экстренная блокировка");
   };
 
+  if (userLoading) {
+    return <div>Загрузка...</div>;
+  }
+
   return (
     <AppLayout>
       <div className={styles.pageContainer}>
-        <PageHeader title="Дашборд VPN Admin Panel" />
-
-        <div className={styles.statsGrid}>
-          <StatCard
-            title="Пользователи"
-            value={users?.length || 0}
-            isLoading={usersLoading}
-            color="blue"
-          />
-          <StatCard
-            title="VPN Ключи"
-            value={keys?.length || 0}
-            isLoading={keysLoading}
-            color="green"
-          />
-          <StatCard
-            title="Серверы"
-            value={servers?.length || 0}
-            isLoading={serversLoading}
-            color="orange"
-          />
-        </div>
-
-        <div className={styles.actionsContainer}>
-          <Button variant="primary" onClick={handleCreateUser}>
-            Создать пользователя
-          </Button>
-          <Button variant="secondary" onClick={handleAddServer}>
-            Добавить сервер
-          </Button>
-          <Button variant="danger" onClick={handleEmergencyBlock}>
-            Экстренная блокировка
-          </Button>
-        </div>
-
-        <Card>
-          <div className={styles.infoSection}>
-            <h3 className={styles.infoTitle}>Статус API</h3>
-            <p className={styles.infoText}>
-              API хуки успешно сгенерированы из OpenAPI схемы. Система работает
-              в полном режиме с реальными данными из VPN сервиса.
-            </p>
-            {usersError && (
-              <p className={styles.errorState}>
-                Ошибка загрузки данных: {String(usersError)}
-              </p>
-            )}
-          </div>
-        </Card>
+        <MainMenu
+          userProfile={{
+            name: user?.username || user?.first_name + " " + user?.last_name,
+            balance: user?.balance ? String(user?.balance) + "₽" : "0₽",
+            id: String(user?.tg_id) || "-",
+            devices: "02",
+          }}
+        />
       </div>
     </AppLayout>
   );
