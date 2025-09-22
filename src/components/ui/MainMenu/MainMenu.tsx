@@ -97,7 +97,7 @@ const MainMenu: React.FC<MainMenuProps> = ({
       id: "about",
       title: "О сервисе",
       icon: ShieldExclamationIcon,
-      onClick: () => console.log("О сервисе"),
+      onClick: () => router.push("/about"),
       variant: "dark" as const,
       size: "big" as const,
     },

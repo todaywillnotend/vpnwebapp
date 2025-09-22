@@ -11,7 +11,7 @@ export default {
       },
       colors: {
         primary: "#FFB000",
-        gray: "#3D3D3D",
+        graydark: "#3D3D3D",
       },
     },
   },

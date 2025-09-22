@@ -35,7 +35,7 @@ const KeysList: React.FC<KeysListProps> = ({ keys }) => {
   const router = useRouter();
 
   const handleKeyAction = (keyId: string) => {
-    console.log("Действие с ключом:", keyId);
+    router.push(`/keys/${encodeURIComponent(keyId)}`);
   };
 
   // Преобразуем сырые данные в нужный формат
@@ -59,7 +59,7 @@ const KeysList: React.FC<KeysListProps> = ({ keys }) => {
           {formattedKeys.map((key) => (
             <div key={key.id} className="flex items-center gap-1">
               <Input
-                isDisabled
+                isReadOnly
                 value={key.name}
                 endContent={
                   <span
@@ -76,7 +76,7 @@ const KeysList: React.FC<KeysListProps> = ({ keys }) => {
                 classNames={{
                   input: "bg-black text-white font-medium",
                   inputWrapper:
-                    "bg-black border border-gray rounded-2xl h-12 min-h-12 px-5",
+                    "bg-black border border-gray-700 rounded-2xl h-12 min-h-12 px-5",
                 }}
               />
               <Button
