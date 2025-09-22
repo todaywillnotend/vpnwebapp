@@ -27,11 +27,11 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   const { data: user, isLoading: userLoading } = useGetOneApiUsersTgIdGet(
     tgId,
-    { tg_id: 0 }, // Фиктивное значение, реальный admin ID автоматически добавляется на сервере
+    { tg_id: tgId }, // Фиктивное значение, реальный admin ID автоматически добавляется на сервере
     { query: { enabled: Boolean(tgId) } }
   );
 
-  if (userLoading || !user) {
+  if (userLoading) {
     return (
       <AppLayout>
         <div className="h-full flex items-center justify-center">
@@ -42,7 +42,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   }
 
   // Если не использовал триал
-  if (!user.trial) {
+  if (!user?.trial || !user) {
     return (
       <AppLayout>
         <TrialMenu

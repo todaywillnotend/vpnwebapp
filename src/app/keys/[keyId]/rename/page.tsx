@@ -1,13 +1,13 @@
 "use client";
 
 import { AppLayout } from "@/components/layout";
-import { KeyDetails, MenuButton } from "@/components/ui";
+import { RenameKeyPage } from "@/components/ui";
 import { useUser } from "@/contexts/UserContext";
 import { Spinner } from "@heroui/react";
 import { useGetAllByFieldApiKeysAllTgIdGet } from "@/api/generated/api";
 import { useParams } from "next/navigation";
 
-export default function KeyDetailsPage() {
+export default function RenameKeyPageRoute() {
   const { tgId } = useUser();
   const params = useParams();
   const keyId = params.keyId as string;
@@ -49,14 +49,13 @@ export default function KeyDetailsPage() {
             <p className="text-graydark">Запрашиваемый ключ не существует</p>
           </div>
         </div>
-        <MenuButton />
       </AppLayout>
     );
   }
 
   return (
     <AppLayout>
-      <KeyDetails keyData={currentKey} />
+      <RenameKeyPage keyData={currentKey} />
     </AppLayout>
   );
 }

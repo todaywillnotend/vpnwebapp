@@ -74,7 +74,8 @@ export async function GET(
     return NextResponse.json(data, {
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Methods":
+          "GET, POST, PUT, PATCH, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Token",
       },
     });
@@ -129,7 +130,8 @@ export async function POST(
     return NextResponse.json(data, {
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Methods":
+          "GET, POST, PUT, PATCH, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Token",
       },
     });
@@ -181,12 +183,83 @@ export async function PUT(
     return NextResponse.json(data, {
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Methods":
+          "GET, POST, PUT, PATCH, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Token",
       },
     });
   } catch (error) {
     console.error("Proxy error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { path: string[] } }
+) {
+  try {
+    const { path } = params;
+    const body = await request.json();
+    const searchParams = request.nextUrl.searchParams;
+
+    // Автоматически добавляем admin tg_id если его нет в query параметрах
+    if (ADMIN_TG_ID) {
+      searchParams.set("tg_id", ADMIN_TG_ID);
+      console.log(`PATCH: Added admin tg_id ${ADMIN_TG_ID} to query params`);
+    }
+
+    // Строим URL для внешнего API
+    const apiPath = path.join("/");
+    const queryString = searchParams.toString();
+    const apiUrl = `${API_BASE_URL}/${apiPath}${queryString ? `?${queryString}` : ""}`;
+
+    console.log(`PATCH request to: ${apiUrl} with body:`, body);
+
+    // Делаем запрос к внешнему API
+    const response = await fetch(apiUrl, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Token": API_TOKEN,
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(
+        `PATCH API request failed: ${response.status} ${response.statusText}`,
+        `URL: ${apiUrl}`,
+        `Response: ${errorText}`
+      );
+      return NextResponse.json(
+        {
+          error: "API request failed",
+          status: response.status,
+          statusText: response.statusText,
+          url: apiUrl,
+          details: errorText,
+        },
+        { status: response.status }
+      );
+    }
+
+    const data = await response.json();
+
+    return NextResponse.json(data, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods":
+          "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Token",
+      },
+    });
+  } catch (error) {
+    console.error("PATCH Proxy error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -232,7 +305,8 @@ export async function DELETE(
     return NextResponse.json(data, {
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Methods":
+          "GET, POST, PUT, PATCH, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Token",
       },
     });
@@ -250,7 +324,7 @@ export async function OPTIONS() {
     status: 200,
     headers: {
       "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Token",
     },
   });

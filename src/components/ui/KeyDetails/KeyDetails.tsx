@@ -83,7 +83,7 @@ const KeyDetails: React.FC<KeyDetailsProps> = ({ keyData }) => {
   };
 
   const handleRenameKey = () => {
-    console.log("Сменить название ключа");
+    router.push(`/keys/${encodeURIComponent(keyData.email || "")}/rename`);
   };
 
   const handleShowQR = () => {
@@ -148,7 +148,7 @@ const KeyDetails: React.FC<KeyDetailsProps> = ({ keyData }) => {
         />
         {/* Анимированное сообщение о копировании */}
         <div
-          className={`absolute inset-0 flex items-center justify-center transition-all duration-300 min-h-12 flex-1 h-full ${
+          className={`absolute inset-0 flex items-center justify-center transition-all duration-300 min-h-12 flex-1 h-full rounded-2xl ${
             copySuccess
               ? "opacity-100 scale-100 backdrop-blur-sm bg-black/50"
               : "opacity-0 scale-95 pointer-events-none"
