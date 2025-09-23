@@ -2,8 +2,7 @@
 
 import { useGetOneApiUsersTgIdGet, UserResponse } from "@/api/generated/api";
 import { AppLayout } from "@/components/layout";
-import { TrialMenu } from "@/components/ui/TrialMenu";
-import { Spinner } from "@heroui/react";
+import { TrialMenu, LoadingPage, ErrorPage } from "@/components/ui";
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 interface UserContextType {
@@ -25,20 +24,22 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   );
   const [tgId, setTgId] = useState<number>(defaultTgId);
 
-  const { data: user, isLoading: userLoading } = useGetOneApiUsersTgIdGet(
+  const {
+    data: user,
+    isLoading: userLoading,
+    error,
+  } = useGetOneApiUsersTgIdGet(
     tgId,
     { tg_id: tgId }, // Фиктивное значение, реальный admin ID автоматически добавляется на сервере
     { query: { enabled: Boolean(tgId) } }
   );
 
   if (userLoading) {
-    return (
-      <AppLayout>
-        <div className="h-full flex items-center justify-center">
-          <Spinner color="primary" size="lg" aria-label="Загрузка..." />
-        </div>
-      </AppLayout>
-    );
+    return <LoadingPage />;
+  }
+
+  if (error) {
+    return <ErrorPage />;
   }
 
   // Если не использовал триал

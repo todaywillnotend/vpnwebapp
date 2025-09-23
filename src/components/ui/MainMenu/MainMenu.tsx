@@ -70,7 +70,7 @@ const MainMenu: React.FC<MainMenuProps> = ({
       subtitle: "Приглашайте друзей и зарабатывайте",
       icon: UserGroupIcon,
       bgImageUrl: "/images/coins.png",
-      onClick: () => console.log("Приглашения"),
+      onClick: () => router.push("/invite"),
       variant: "yellow" as const,
       size: "small" as const,
     },
