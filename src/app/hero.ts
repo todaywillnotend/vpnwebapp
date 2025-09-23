@@ -8,6 +8,7 @@ export default heroui({
     dark: {
       colors: {
         primary: "#FFB000",
+        danger: "#FF4848",
       },
     },
   },

@@ -41,7 +41,7 @@ const MainMenu: React.FC<MainMenuProps> = ({
   const menuItems = [
     {
       id: "subscriptions",
-      title: "Мои подписки",
+      title: "Мои ключи",
       icon: LinkIcon,
       onClick: () => router.push("/keys"),
       variant: "default" as const,
@@ -49,9 +49,9 @@ const MainMenu: React.FC<MainMenuProps> = ({
     },
     {
       id: "balance",
-      title: "Баланс",
-      icon: CurrencyDollarIcon,
-      onClick: () => console.log("Баланс"),
+      title: "Пополнить",
+      icon: WalletIcon,
+      onClick: () => console.log("Пополнить"),
       variant: "default" as const,
       size: "small" as const,
     },
@@ -111,7 +111,7 @@ const MainMenu: React.FC<MainMenuProps> = ({
       <div className="text-[32px] font-bold text-white mb-[20px]">
         {userProfile.name}
       </div>
-      <div className="grid grid-flow-col auto-cols-auto gap-[14px] mb-[24px] w-fit">
+      <div className="grid grid-flow-col auto-cols-auto gap-[14px] w-fit">
         <div>
           <div className="text-primary font-medium text-xs tracking-wider py-[4px] rounded-xl inline-block mb-[4px]">
             БАЛАНС
@@ -139,14 +139,10 @@ const MainMenu: React.FC<MainMenuProps> = ({
       </div>
 
       {/* Menu Items */}
-      <div className="flex gap-[8px] mt-[55px] flex-wrap">
+      <div className="flex gap-[8px] mt-[40px] flex-wrap">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const getColorClasses = () => {
-            // if (item.disabled) {
-            //   return "bg-[#3d3d3d] text-gray-400";
-            // }
-
             switch (item.variant) {
               case "yellow":
                 return "bg-primary from-primary-400 to-primary-500 text-gray-900 font-medium";

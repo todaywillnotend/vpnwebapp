@@ -80,7 +80,9 @@ const TrialMenu: React.FC<TrialMenuProps> = () => {
     <div className="h-full flex flex-col">
       {/* Hero Section */}
 
-      <FeatureShowcase />
+      <div className="mb-8">
+        <FeatureShowcase />
+      </div>
 
       {/* Menu Items */}
       <div className="flex gap-[8px] flex-wrap">

@@ -92,7 +92,7 @@ const FeatureShowcase: React.FC = () => {
   const activeFeature = features[activeFeatureIndex];
 
   return (
-    <div className="flex flex-col items-center text-center mb-8">
+    <div className="flex flex-col items-center text-center">
       {/* Logo */}
       <div className="mb-6">
         <img

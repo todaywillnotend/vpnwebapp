@@ -18,7 +18,7 @@ export default function AboutPage() {
     <AppLayout>
       <div className="flex flex-col h-full">
         {/* Feature Showcase */}
-        <div className="mb-8">
+        <div className="mb-4">
           <FeatureShowcase />
         </div>
 

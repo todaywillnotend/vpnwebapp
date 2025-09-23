@@ -13,15 +13,10 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import { BackButton, MenuButton } from "../";
-
-interface RawKeyItem {
-  email?: string | null;
-  alias?: string | null;
-  expiry_time?: number;
-}
+import { KeyResponse } from "@/api/generated/api";
 
 interface KeyDetailsProps {
-  keyData: RawKeyItem;
+  keyData: KeyResponse;
 }
 
 function formatTimeRemaining(timestamp: number): {
@@ -50,7 +45,7 @@ const KeyDetails: React.FC<KeyDetailsProps> = ({ keyData }) => {
   const [isCopying, setIsCopying] = useState(false);
 
   const keyName = keyData.alias || keyData.email || "";
-  const keyUrl = `https://bot.beefree/${keyData.email}`;
+  const keyUrl = keyData.remnawave_link || keyData.key || "";
   const timeRemaining = keyData.expiry_time
     ? formatTimeRemaining(keyData.expiry_time)
     : { days: 0, hours: 0 };
@@ -75,7 +70,10 @@ const KeyDetails: React.FC<KeyDetailsProps> = ({ keyData }) => {
   };
 
   const handleConnectDevice = () => {
-    console.log("Подключить устройство");
+    // Если ремень, то открывает страницу подписки
+    if (keyData?.remnawave_link) {
+      window.location.href = keyData.remnawave_link;
+    }
   };
 
   const handleExtendSubscription = () => {
@@ -183,6 +181,7 @@ const KeyDetails: React.FC<KeyDetailsProps> = ({ keyData }) => {
           size="lg"
           className="w-full bg-primary text-white rounded-2xl text-[14px] font-medium gap-[8px]"
           onPress={handleExtendSubscription}
+          isDisabled
         >
           <CreditCardIcon className="w-4 h-4" />
           Продлить подписку
@@ -200,7 +199,7 @@ const KeyDetails: React.FC<KeyDetailsProps> = ({ keyData }) => {
         </Button>
 
         {/* QR-код и Удалить */}
-        <div className="flex gap-[10px]">
+        <div className="flex gap-[10px] hidden">
           <Button
             size="lg"
             className="flex-1 bg-white text-black rounded-2xl text-[14px] font-medium gap-[8px]"

@@ -11,7 +11,7 @@ export default {
       },
       colors: {
         primary: "#FFB000",
-        graydark: "#3D3D3D",
+        danger: "#FF4848",
       },
     },
   },
