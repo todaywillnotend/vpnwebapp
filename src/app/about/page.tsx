@@ -24,7 +24,7 @@ export default function AboutPage() {
 
         {/* About Service Text */}
         <div className="flex-1 mb-8">
-          <div className="bg-black/30 rounded-2xl p-6 border border-gray-600">
+          <div className="bg-black/30 rounded-2xl p-3 border border-gray-600">
             <h2 className="text-primary text-lg font-bold mb-4 text-center">
               О СЕРВИСЕ
             </h2>

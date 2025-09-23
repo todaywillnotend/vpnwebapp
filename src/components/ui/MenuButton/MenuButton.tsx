@@ -21,7 +21,7 @@ interface MenuButtonProps {
 }
 
 const MenuButton: React.FC<MenuButtonProps> = ({
-  className = "w-full bg-white text-black rounded-2xl text-lg font-medium gap-[8px]",
+  className = "w-full bg-white text-black rounded-2xl text-[14px] font-medium gap-[8px]",
   size = "lg",
   variant = "solid",
   onPress,
@@ -44,7 +44,7 @@ const MenuButton: React.FC<MenuButtonProps> = ({
       variant={variant}
       onPress={handlePersonalAccount}
     >
-      <UserIcon className="w-5 h-5" />
+      <UserIcon className="w-4 h-4" />
       Личный кабинет
     </Button>
   );

@@ -5,3 +5,4 @@ export { BackButton } from "./BackButton";
 export { MenuButton } from "./MenuButton";
 export { FeatureShowcase } from "./FeatureShowcase";
 export { RenameKeyPage } from "./RenameKeyPage";
+export { CopyableInput } from "./CopyableInput";

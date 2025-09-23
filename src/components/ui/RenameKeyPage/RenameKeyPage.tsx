@@ -106,18 +106,14 @@ const RenameKeyPage: React.FC<RenameKeyPageProps> = ({ keyData }) => {
         </div>
 
         {/* Кнопки внизу - прижаты к низу */}
-        <div className="space-y-3 mt-auto">
-          <Button
-            variant="bordered"
-            onPress={handleCancel}
-            className="w-full bg-transparent border border-white text-white rounded-2xl text-base font-medium h-14"
-            isDisabled={isPending}
-          >
+        <div className="space-y-[10px] mt-auto">
+          <BackButton isDisabled={isPending} onPress={handleCancel}>
             Отмена
-          </Button>
+          </BackButton>
           <Button
+            size="lg"
             onPress={handleSave}
-            className="w-full bg-white text-black rounded-2xl text-base font-medium h-14"
+            className="w-full bg-white text-black rounded-2xl text-base font-medium text-[14px]"
             isLoading={isPending}
             isDisabled={!newName.trim() || newName.trim() === keyName}
           >

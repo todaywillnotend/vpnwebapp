@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@heroui/react";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 interface BackButtonProps {
+  children?: ReactNode;
   className?: string;
   size?: "sm" | "md" | "lg";
   variant?:
@@ -17,13 +18,16 @@ interface BackButtonProps {
     | "shadow"
     | "ghost";
   onPress?: () => void;
+  isDisabled?: boolean;
 }
 
 const BackButton: React.FC<BackButtonProps> = ({
-  className = "w-full bg-transparent border border-white text-white rounded-2xl text-lg gap-[8px]",
+  className = "w-full bg-transparent border border-white text-white rounded-2xl text-[14px] gap-[8px]",
   size = "lg",
   variant = "bordered",
   onPress,
+  isDisabled,
+  children,
 }) => {
   const router = useRouter();
 
@@ -41,9 +45,14 @@ const BackButton: React.FC<BackButtonProps> = ({
       className={className}
       variant={variant}
       onPress={handleGoBack}
+      isDisabled={isDisabled}
     >
-      <ArrowLeftIcon className="w-5 h-5" />
-      Назад
+      {children ?? (
+        <>
+          <ArrowLeftIcon className="w-4 h-4" />
+          Назад
+        </>
+      )}
     </Button>
   );
 };

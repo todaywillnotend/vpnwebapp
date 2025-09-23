@@ -2,17 +2,15 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Input } from "@heroui/react";
+import { Button } from "@heroui/react";
 import {
-  ClipboardDocumentIcon,
-  CheckIcon,
   LinkIcon,
   CreditCardIcon,
   PencilIcon,
   QrCodeIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import { BackButton, MenuButton } from "../";
+import { BackButton, MenuButton, CopyableInput } from "../";
 import { KeyResponse } from "@/api/generated/api";
 
 interface KeyDetailsProps {
@@ -41,8 +39,6 @@ function formatTimeRemaining(timestamp: number): {
 
 const KeyDetails: React.FC<KeyDetailsProps> = ({ keyData }) => {
   const router = useRouter();
-  const [copySuccess, setCopySuccess] = useState(false);
-  const [isCopying, setIsCopying] = useState(false);
 
   const keyName = keyData.alias || keyData.email || "";
   const keyUrl = keyData.remnawave_link || keyData.key || "";
@@ -50,23 +46,8 @@ const KeyDetails: React.FC<KeyDetailsProps> = ({ keyData }) => {
     ? formatTimeRemaining(keyData.expiry_time)
     : { days: 0, hours: 0 };
 
-  const handleCopyKey = async () => {
-    if (isCopying) return; // Предотвращаем множественные клики
-
-    try {
-      setIsCopying(true);
-      await navigator.clipboard.writeText(keyUrl);
-      setCopySuccess(true);
-
-      // Сбрасываем состояние через 2 секунды
-      setTimeout(() => {
-        setCopySuccess(false);
-        setIsCopying(false);
-      }, 2000);
-    } catch (err) {
-      console.error("Ошибка копирования:", err);
-      setIsCopying(false);
-    }
+  const handleCopyKey = (value: string) => {
+    console.log("Ключ скопирован:", value);
   };
 
   const handleConnectDevice = () => {
@@ -113,56 +94,11 @@ const KeyDetails: React.FC<KeyDetailsProps> = ({ keyData }) => {
       </div>
 
       {/* Input с ключом и кнопкой копирования */}
-      <div className="mb-[12px] relative">
-        <Input
-          value={keyUrl}
-          isReadOnly
-          onClick={handleCopyKey}
-          endContent={
-            <Button
-              isIconOnly
-              variant="light"
-              className={`transition-all duration-300 ${
-                copySuccess
-                  ? "text-primary scale-110"
-                  : "text-white hover:text-primary"
-              }`}
-              onPress={handleCopyKey}
-              isDisabled={isCopying}
-            >
-              {copySuccess ? (
-                <CheckIcon className="w-4 h-4" />
-              ) : (
-                <ClipboardDocumentIcon className="w-4 h-4" />
-              )}
-            </Button>
-          }
-          className="w-full bg-black rounded-2xl cursor-pointer transition-all duration-300"
-          classNames={{
-            input: "bg-black text-white font-medium cursor-pointer",
-            inputWrapper:
-              "cursor-pointer border border-gray-700 bg-black h-12 min-h-12 px-5 rounded-2xl",
-          }}
-        />
-        {/* Анимированное сообщение о копировании */}
-        <div
-          className={`absolute inset-0 flex items-center justify-center transition-all duration-300 min-h-12 flex-1 h-full rounded-2xl ${
-            copySuccess
-              ? "opacity-100 scale-100 backdrop-blur-sm bg-black/50"
-              : "opacity-0 scale-95 pointer-events-none"
-          }`}
-        >
-          <div
-            className={`transform transition-all duration-300 w-full h-full ${
-              copySuccess ? "translate-y-0 scale-100" : "translate-y-2 scale-95"
-            }`}
-          >
-            <p className="text-primary text-[14px] font-bold px-4 py-2 rounded-xl bg-black/80 border border-primary/20 shadow-lg cursor-default select-none w-full h-full flex items-center justify-center">
-              ✓ Скопировано в буфер обмена!
-            </p>
-          </div>
-        </div>
-      </div>
+      <CopyableInput
+        value={keyUrl}
+        onCopy={handleCopyKey}
+        className="mb-[12px]"
+      />
 
       {/* Кнопки действий */}
       <div className="space-y-[12px] mb-[20px]">
