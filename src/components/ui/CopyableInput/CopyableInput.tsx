@@ -78,7 +78,7 @@ const CopyableInput: React.FC<CopyableInputProps> = ({
         }
         className={`w-full bg-black rounded-2xl cursor-pointer transition-all duration-300 ${inputClassName}`}
         classNames={{
-          input: "bg-black text-white font-medium cursor-pointer",
+          input: "bg-black text-white font-medium cursor-pointer text-ellipsis",
           inputWrapper:
             "cursor-pointer border border-gray-700 bg-black h-12 min-h-12 px-5 rounded-2xl",
         }}
