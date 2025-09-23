@@ -135,11 +135,12 @@ const KeyDetails: React.FC<KeyDetailsProps> = ({ keyData }) => {
         </Button>
 
         {/* QR-код и Удалить */}
-        <div className="flex gap-[10px] hidden">
+        <div className="flex gap-[10px]">
           <Button
             size="lg"
             className="flex-1 bg-white text-black rounded-2xl text-[14px] font-medium gap-[8px]"
             onPress={handleShowQR}
+            isDisabled
           >
             <QrCodeIcon className="w-4 h-4" />
             QR-код
@@ -148,6 +149,7 @@ const KeyDetails: React.FC<KeyDetailsProps> = ({ keyData }) => {
             size="lg"
             className="flex-1 bg-red-500 text-white rounded-2xl text-[14px] font-medium gap-[8px]"
             onPress={handleDeleteKey}
+            isDisabled
           >
             <TrashIcon className="w-4 h-4" />
             Удалить
