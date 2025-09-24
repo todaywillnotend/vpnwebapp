@@ -1,10 +1,8 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-import {
-  useGetAllByFieldApiReferralsAllTgIdGet,
-  useGetPaymentsByTgIdApiPaymentsByTgIdTgIdGet,
-} from "@/api/generated/api";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/api/client";
 import { UserReferralStats } from "@/types/referral";
 import { SHARE_CONFIG, REFERRAL_MESSAGES } from "@/config/referral";
 
@@ -24,63 +22,40 @@ interface UseReferralReturn {
 }
 
 export const useReferral = ({ tgId }: UseReferralProps): UseReferralReturn => {
-  // Получаем данные о рефералах
+  // Получаем данные о рефералах через новый API
   const {
-    data: referrals,
-    isLoading: referralsLoading,
-    error: referralsError,
-  } = useGetAllByFieldApiReferralsAllTgIdGet(
-    tgId,
-    { tg_id: tgId },
-    { query: { enabled: Boolean(tgId) } }
-  );
-
-  // Получаем платежи самого пользователя для поиска реферальных бонусов
-  const {
-    data: payments,
-    isLoading: paymentsLoading,
-    error: paymentsError,
-  } = useGetPaymentsByTgIdApiPaymentsByTgIdTgIdGet(
-    tgId,
-    { tg_id: tgId },
-    { query: { enabled: Boolean(tgId) } }
-  );
+    data: referralData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["referrals", tgId],
+    queryFn: async () => {
+      const response = await api.referrals.getAll();
+      return response.data;
+    },
+    enabled: Boolean(tgId),
+    staleTime: 5 * 60 * 1000, // 5 минут
+  });
 
   // Генерируем ссылку приглашения с tgId
   const inviteLink = useMemo(() => {
     return `${NEXT_PUBLIC_TG_BOT}?start=referral_${tgId}`;
   }, [tgId]);
 
-  // Вычисляем статистику пользователя
+  // Получаем статистику из ответа API
   const stats = useMemo((): UserReferralStats => {
-    const invitedCount = referrals?.length || 0;
-
-    // Подсчитываем реферальные бонусы из платежей самого пользователя
-    // Ищем платежи, которые являются реферальными пополнениями
-    const referralBonus =
-      payments?.reduce((total: number, payment: any) => {
-        // Ищем успешные платежи, которые связаны с реферальной системой
-        if (
-          payment.status === "success" &&
-          (payment.payment_system === "referral" ||
-            payment.payment_system === "bonus" ||
-            payment.payment_system === "referral_bonus" ||
-            payment.payment_system?.toLowerCase().includes("referral") ||
-            payment.payment_system?.toLowerCase().includes("реферал"))
-        ) {
-          return total + payment.amount;
-        }
-        return total;
-      }, 0) || 0;
-
-    // Округляем до 2 знаков после запятой
-    const roundedBonus = Math.round(referralBonus * 100) / 100;
+    if (!referralData?.stats) {
+      return {
+        balance: "0₽",
+        invited: 0,
+      };
+    }
 
     return {
-      balance: `${roundedBonus}₽`,
-      invited: invitedCount,
+      balance: referralData.stats.balance,
+      invited: referralData.stats.invited,
     };
-  }, [referrals, payments]);
+  }, [referralData]);
 
   // Функция для шаринга через Web Share API
   const shareInvite = useCallback(async (): Promise<void> => {
@@ -113,10 +88,6 @@ export const useReferral = ({ tgId }: UseReferralProps): UseReferralReturn => {
       throw new Error(REFERRAL_MESSAGES.SHARE_ERROR);
     }
   }, [inviteLink]);
-
-  // Объединяем состояния загрузки и ошибок
-  const isLoading = referralsLoading || paymentsLoading;
-  const error = referralsError || paymentsError;
 
   return {
     stats,

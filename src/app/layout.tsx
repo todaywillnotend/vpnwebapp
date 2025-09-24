@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import QueryProvider from "@/providers/QueryProvider";
 import { UserProvider } from "@/contexts/UserContext";
+import { AuthGuard } from "@/components/AuthGuard";
 import { HeroUIProvider } from "@heroui/react";
 import "./globals.scss";
 
@@ -23,7 +24,9 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <HeroUIProvider>
-            <UserProvider>{children}</UserProvider>
+            <UserProvider>
+              <AuthGuard>{children}</AuthGuard>
+            </UserProvider>
           </HeroUIProvider>
         </QueryProvider>
       </body>

@@ -4,14 +4,9 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input } from "@heroui/react";
 import { BackButton } from "../";
-import {
-  useEditKeyByEmailApiKeysEditByEmailEmailPatch,
-  getGetByEmailApiKeysByEmailGetQueryKey,
-  getGetAllByFieldApiKeysAllTgIdGetQueryKey,
-  getGetRouterKeysByTgIdApiKeysRoutersTgIdGetQueryKey,
-} from "@/api/generated/api";
 import { useUser } from "@/contexts/UserContext";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { api } from "@/api/client";
 
 interface RenameKeyPageProps {
   keyData: {
@@ -23,54 +18,46 @@ interface RenameKeyPageProps {
 
 const RenameKeyPage: React.FC<RenameKeyPageProps> = ({ keyData }) => {
   const router = useRouter();
-  const { tgId } = useUser();
+  const { user } = useUser();
   const queryClient = useQueryClient();
 
   const keyName = keyData.alias || keyData.email || "";
   const [newName, setNewName] = useState(keyName);
 
-  const { mutateAsync, isPending } =
-    useEditKeyByEmailApiKeysEditByEmailEmailPatch();
-
-  const handleSave = async () => {
-    if (!newName.trim()) return;
-
-    try {
-      await mutateAsync({
-        email: keyData.email || "",
-        data: { alias: newName.trim() },
-        params: { tg_id: tgId },
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async (data: { keyId: string; alias: string }) => {
+      const response = await api.keys.update(data.keyId, { alias: data.alias });
+      return response.data;
+    },
+    onSuccess: () => {
+      // Инвалидируем кэш для обновления данных
+      queryClient.invalidateQueries({
+        queryKey: ["keys"],
       });
 
-      // Инвалидируем кэш для обновления данных
+      // Инвалидируем конкретный ключ
       if (keyData.email) {
-        // Инвалидируем запрос конкретного ключа по email
         queryClient.invalidateQueries({
-          queryKey: getGetByEmailApiKeysByEmailGetQueryKey({
-            email: keyData.email,
-            tg_id: tgId,
-          }),
-        });
-      }
-
-      if (tgId) {
-        // Инвалидируем список всех ключей пользователя
-        queryClient.invalidateQueries({
-          queryKey: getGetAllByFieldApiKeysAllTgIdGetQueryKey(tgId, {
-            tg_id: tgId,
-          }),
-        });
-
-        // Инвалидируем роутер ключи
-        queryClient.invalidateQueries({
-          queryKey: getGetRouterKeysByTgIdApiKeysRoutersTgIdGetQueryKey(tgId, {
-            tg_id: tgId,
-          }),
+          queryKey: ["keys", keyData.email],
         });
       }
 
       // Возвращаемся на страницу деталей ключа
       router.back();
+    },
+    onError: (error) => {
+      console.error("Ошибка при сохранении названия:", error);
+    },
+  });
+
+  const handleSave = async () => {
+    if (!newName.trim() || !keyData.email) return;
+
+    try {
+      await mutateAsync({
+        keyId: keyData.email,
+        alias: newName.trim(),
+      });
     } catch (error) {
       console.error("Ошибка при сохранении названия:", error);
     }

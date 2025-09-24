@@ -6,14 +6,34 @@ const SHARE_TEXT = process.env.NEXT_PUBLIC_SHARE_TEXT || "";
 export const BONUS_LEVELS: BonusLevel[] = [
   {
     level: 1,
-    percentage: 25,
-    title: "1 уровень",
+    percentage: 100,
+    title: "За каждого реферала",
   },
-  {
-    level: 2,
-    percentage: 10,
-    title: "2 уровень",
-  },
+  // {
+  //   level: 1,
+  //   percentage: 25,
+  //   title: "1 уровень",
+  // },
+  // {
+  //   level: 2,
+  //   percentage: 10,
+  //   title: "2 уровень",
+  // },
+  // {
+  //   level: 3,
+  //   percentage: 5,
+  //   title: "3 уровень",
+  // },
+  // {
+  //   level: 4,
+  //   percentage: 5,
+  //   title: "4 уровень",
+  // },
+  // {
+  //   level: 5,
+  //   percentage: 3,
+  //   title: "5 уровень",
+  // },
 ];
 
 export const SHARE_CONFIG: ShareData = {

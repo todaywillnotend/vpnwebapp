@@ -14,15 +14,12 @@ const BonusLevel: React.FC<BonusLevelProps> = ({
 }) => {
   return (
     <div
-      className={`flex items-center justify-between bg-black/40 rounded-2xl p-[8px] border border-gray-700 ${className}`}
+      className={`flex items-center justify-between bg-black/40 rounded-2xl p-[8px] border border-gray-700 min-w-[48%] h-[48px] flex-1 ${className}`}
     >
       <div className="flex items-center gap-[12px]">
-        <div className="w-[40px] h-[40px] bg-primary rounded-full flex items-center justify-center">
-          <span className="text-black font-bold text-[14px]">
-            {bonusLevel.level}
-          </span>
-        </div>
-        <span className="text-white font-medium">{bonusLevel.title}</span>
+        <span className="text-white text-[14px] font-medium">
+          {bonusLevel.title}
+        </span>
       </div>
       <span className="text-primary font-bold text-[14px]">
         {bonusLevel.percentage}% бонуса

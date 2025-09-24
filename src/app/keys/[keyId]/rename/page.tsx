@@ -3,32 +3,30 @@
 import { AppLayout } from "@/components/layout";
 import { RenameKeyPage, LoadingPage, ErrorPage } from "@/components/ui";
 import { useUser } from "@/contexts/UserContext";
-import { useGetAllByFieldApiKeysAllTgIdGet } from "@/api/generated/api";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import { api } from "@/api/client";
 
 export default function RenameKeyPageRoute() {
-  const { tgId } = useUser();
+  const { user } = useUser();
   const params = useParams();
-  const keyId = params.keyId as string;
+  const keyId = decodeURIComponent(params.keyId as string);
 
   const {
     data: keys = [],
     isLoading: keysLoading,
     error,
-  } = useGetAllByFieldApiKeysAllTgIdGet(
-    tgId,
-    { tg_id: tgId }, // Фиктивное значение, реальный admin ID автоматически добавляется на сервере
-    {
-      query: {
-        enabled: true,
-      },
-    }
-  );
+  } = useQuery({
+    queryKey: ["keys"],
+    queryFn: async () => {
+      const response = await api.keys.getAll();
+      return response.data;
+    },
+    enabled: Boolean(user?.tg_id),
+  });
 
   // Находим конкретный ключ по ID
-  const currentKey = keys.find(
-    (key) => key.email === decodeURIComponent(keyId)
-  );
+  const currentKey = keys.find((key: any) => key.email === keyId);
 
   if (keysLoading) {
     return <LoadingPage />;

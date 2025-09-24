@@ -9,6 +9,9 @@ import { useReferral } from "@/hooks/useReferral";
 import { BONUS_LEVELS, REFERRAL_MESSAGES } from "@/config/referral";
 import { UserResponse } from "@/api/generated/api";
 
+const VPN_PROJECT_REFERAL_TEXT =
+  process.env.NEXT_PUBLIC_VPN_PROJECT_REFERAL_TEXT || "";
+
 interface InvitePageProps {
   user?: UserResponse;
   className?: string;
@@ -48,11 +51,7 @@ const InvitePage: React.FC<InvitePageProps> = ({ user, className = "" }) => {
   const bonusLevelsComponents = useMemo(
     () =>
       BONUS_LEVELS.map((level) => (
-        <BonusLevel
-          key={level.level}
-          bonusLevel={level}
-          className="mb-[4px] last:mb-0"
-        />
+        <BonusLevel key={level.level} bonusLevel={level} />
       )),
     []
   );
@@ -66,11 +65,13 @@ const InvitePage: React.FC<InvitePageProps> = ({ user, className = "" }) => {
 
       {/* Описание */}
       <div className="text-white mb-[18px] text-[14px]">
-        Приглашайте друзей и получайте крутые бонусы на каждом уровне
+        {VPN_PROJECT_REFERAL_TEXT}
       </div>
 
       {/* Уровни бонусов */}
-      <div className="space-y-[4px] mb-[18px]">{bonusLevelsComponents}</div>
+      <div className="flex flex-wrap gap-[8px] mb-[18px]">
+        {bonusLevelsComponents}
+      </div>
 
       {/* Статистика пользователя */}
       <UserStats stats={stats} className="mb-[18px]" />
