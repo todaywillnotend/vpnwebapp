@@ -12,6 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { BackButton, MenuButton, CopyableInput } from "../";
 import { KeyResponse } from "@/api/generated/api";
+import { getDaysPlural, getHoursPlural } from "@/lib/pluralize";
 
 interface KeyDetailsProps {
   keyData: KeyResponse;
@@ -85,11 +86,15 @@ const KeyDetails: React.FC<KeyDetailsProps> = ({ keyData }) => {
           <span className="text-primary text-[48px] font-[900]">
             {timeRemaining.days}
           </span>
-          <span className="text-primary text-[12px] font-medium">ДНЕЙ</span>
+          <span className="text-primary text-[12px] font-medium">
+            {getDaysPlural(timeRemaining.days).toUpperCase()}
+          </span>
           <span className="text-primary text-[48px] font-[900] ml-[4px]">
             {timeRemaining.hours}
           </span>
-          <span className="text-primary text-[12px] font-medium">ЧАСОВ</span>
+          <span className="text-primary text-[12px] font-medium">
+            {getHoursPlural(timeRemaining.hours).toUpperCase()}
+          </span>
         </div>
       </div>
 
